@@ -1,0 +1,38 @@
+name: Build and Push Docker Image
+
+# 触发条件：当 main 分支有代码提交(push)时
+on:
+  push:
+    branches: [ "main" ]
+    # 只有当这两个文件变动时才触发（避免改个README也触发构建）
+    paths:
+      - 'Dockerfile'
+      - 'requirements.txt'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # 使用 GitHub 提供的最新 Ubuntu 环境
+
+    steps:
+      # 第一步：把你的代码下载到云端电脑
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 第二步：登录 Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 第三步：构建镜像并推送到 Docker Hub
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          # 这里要注意修改为你自己的 Docker Hub 用户名！
+          # 比如: giscop/my-python:latest
+          tags: |
+            giscor/my-python:latest
+            giscor/my-python:${{ github.sha }}
