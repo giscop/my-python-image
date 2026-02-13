@@ -1,0 +1,10 @@
+# 基础工具
+ipython
+requests
+tqdm
+
+# 数据处理 (按需添加)
+pandas
+numpy
+
+# 你的其他常用库...
